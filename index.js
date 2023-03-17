@@ -36,6 +36,8 @@ app.post("/pay", async (req, res) => {
   const { queryId, products, delievery, delievery_time, comment, price } =
     req.body;
 
+  console.log(req.body);
+
   const getProductTitles = (products) => {
     const titles = products.map((product) => product.title);
     return titles.join(", ");
