@@ -36,12 +36,18 @@ app.post("/pay", async (req, res) => {
   const { queryId, products, delievery, delievery_time, comment, price } =
     req.body;
 
+  const getProductTitles = (products) => {
+    const titles = products.map((product) => product.title);
+    return titles.join(", ");
+  };
+
   try {
     const message = `
 Вид доставки: ${delievery},
 Время доставки: ${delievery_time},
 Комментарий: ${comment},
-Сумма заказа: ${price}
+Сумма заказа: ${price},
+Продукты: ${getProductTitles(products)}
     `;
 
     await bot.answerWebAppQuery(queryId, {
