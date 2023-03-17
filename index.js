@@ -33,13 +33,15 @@ bot.on("message", async (msg) => {
 });
 
 app.post("/pay", async (req, res) => {
-  const { queryId, products, delievery, delievery_time, comment } = req.body;
+  const { queryId, products, delievery, delievery_time, comment, price } =
+    req.body;
 
   try {
     const message = `
-      Вид доставки: ${delievery},
-      Время доставки: ${delievery_time},
-      Комментарий: ${comment}
+Вид доставки: ${delievery},
+Время доставки: ${delievery_time},
+Комментарий: ${comment},
+Сумма заказа: ${price}
     `;
 
     await bot.answerWebAppQuery(queryId, {
