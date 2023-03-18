@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const TelegramBot = require("node-telegram-bot-api");
 
-const token = "5849276897:AAFzjAjgswqaK-chNNCdEWDNkrjJuq_JvBA";
+const token = "6034132301:AAFsbKhXl5iNdh1ZqGNIUKoM6VTVFP0gvLs";
 
 const prisma = new PrismaClient();
 const express = require("express");
