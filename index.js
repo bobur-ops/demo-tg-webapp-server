@@ -1,7 +1,9 @@
+const { PrismaClient } = require("@prisma/client");
 const TelegramBot = require("node-telegram-bot-api");
 
-const token = "6034132301:AAFsbKhXl5iNdh1ZqGNIUKoM6VTVFP0gvLs";
+const token = "5849276897:AAFzjAjgswqaK-chNNCdEWDNkrjJuq_JvBA";
 
+const prisma = new PrismaClient();
 const express = require("express");
 const cors = require("cors");
 
@@ -18,6 +20,7 @@ bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
   if (text === "/start") {
+    console.log(chatId);
     await bot.sendMessage(
       chatId,
       "Чтобы открыть графический интерфейс нажмите на кнопку ниже или нажмите на синюю кнопку Сайт",
@@ -29,6 +32,53 @@ bot.on("message", async (msg) => {
         },
       }
     );
+  }
+
+  if (text === "/register_admin") {
+    try {
+      const alreadyExist = await prisma.admin.findUnique({
+        where: {
+          chatId: chatId.toString(),
+        },
+      });
+      if (alreadyExist) {
+        bot.sendMessage(chatId, "Вы уже являетесь администратором");
+        return;
+      }
+
+      await prisma.admin.create({
+        data: { chatId: chatId.toString() },
+      });
+
+      bot.sendMessage(
+        chatId,
+        "Вы зарегистрированы как администратор. Вы будете получать сообщение про новые заказы!"
+      );
+    } catch (error) {
+      console.log(error.message);
+      bot.sendMessage(
+        chatId,
+        "Не получилось зарегистрировать вас как администратора, попробуйте позже"
+      );
+    }
+  }
+
+  if (text === "/delete_admin") {
+    try {
+      await prisma.admin.delete({
+        where: {
+          chatId: chatId.toString(),
+        },
+      });
+
+      bot.sendMessage(
+        chatId,
+        "Вы удалены как администратор из наших баз данных"
+      );
+    } catch (error) {
+      console.log(error.message);
+      bot.sendMessage(chatId, "Не получилось удалить вас как администратора");
+    }
   }
 });
 
@@ -50,6 +100,22 @@ app.post("/pay", async (req, res) => {
 Продукты: ${getProductTitles(products)}
     `;
 
+    const admins = await prisma.admin.findMany();
+    const chatIds = admins.map((admin) => admin.chatId);
+
+    chatIds.forEach((chatId) => {
+      bot.sendMessage(
+        chatId,
+        `<b>Новый заказ!</b>
+Продукты: ${getProductTitles(products)}
+Время доставки: ${delievery_time}
+Вид доставки: ${delievery}
+Комментарий клиента: ${comment}
+      `,
+        { parse_mode: "HTML" }
+      );
+    });
+
     await bot.answerWebAppQuery(queryId, {
       type: "article",
       id: queryId,
@@ -61,6 +127,7 @@ app.post("/pay", async (req, res) => {
 
     return res.status(200).json({ message: "Successfull" });
   } catch (error) {
+    console.log(error.message);
     await bot.answerWebAppQuery(queryId, {
       type: "article",
       id: queryId,
