@@ -6,10 +6,10 @@ generator client {
 }
 
 datasource db {
-  // provider     = "mysql"
-  provider = "sqlite"
-  url      = "file:./dev.db"
-  // relationMode = "prisma"
+  provider     = "mysql"
+  // provider = "sqlite"
+  url          = "mysql://root:20DrAK1OREcaMgnXVY2S@containers-us-west-32.railway.app:6790/railway"
+  relationMode = "prisma"
 }
 
 model Admin {
