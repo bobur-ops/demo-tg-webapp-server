@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const token = process.env.TELGRAM_BOT_TOKEN;
+const token = "6034132301:AAFsbKhXl5iNdh1ZqGNIUKoM6VTVFP0gvLs";
 
 const prisma = new PrismaClient();
 const express = require("express");
