@@ -153,20 +153,29 @@ app.post("/pay", async (req, res) => {
 });
 
 bot.on("callback_query", async (callbackQuery) => {
-  const queryId = callbackQuery.id;
-  const chatId = callbackQuery.message.chat.id;
-  const data = callbackQuery.data;
+  try {
+    const queryId = callbackQuery.id;
+    const chatId = callbackQuery.message.chat.id;
+    const data = callbackQuery.data;
 
-  if (data.startsWith("complete_order")) {
-    const orderId = data.split("_")[1];
+    if (data.startsWith("complete_order")) {
+      const orderId = data.split("_")[1];
 
-    await bot.sendMessage(orderId, "Ваш заказ завершен. Спасибо за покупку!", {
-      parse_mode: "HTML",
-    });
+      await bot.sendMessage(
+        orderId,
+        "Ваш заказ завершен. Спасибо за покупку!",
+        {
+          parse_mode: "HTML",
+        }
+      );
 
-    await bot.sendMessage(chatId, "Заказ завершен!", {
-      parse_mode: "HTML",
-    });
+      await bot.sendMessage(chatId, "Заказ завершен!", {
+        parse_mode: "HTML",
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+    await bot.sendMessage(chatId, "Что то пошло не так!");
   }
 });
 
