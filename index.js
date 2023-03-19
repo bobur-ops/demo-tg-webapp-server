@@ -1,7 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const TelegramBot = require("node-telegram-bot-api");
 
-const token = "6034132301:AAFsbKhXl5iNdh1ZqGNIUKoM6VTVFP0gvLs";
+// const token = "6034132301:AAFsbKhXl5iNdh1ZqGNIUKoM6VTVFP0gvLs";
+const token = "5849276897:AAFzjAjgswqaK-chNNCdEWDNkrjJuq_JvBA";
 
 const prisma = new PrismaClient();
 const express = require("express");
@@ -20,7 +21,6 @@ bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
   if (text === "/start") {
-    console.log(chatId);
     await bot.sendMessage(
       chatId,
       "Чтобы открыть графический интерфейс нажмите на кнопку ниже или нажмите на синюю кнопку Сайт",
@@ -83,8 +83,15 @@ bot.on("message", async (msg) => {
 });
 
 app.post("/pay", async (req, res) => {
-  const { queryId, products, delievery, delievery_time, comment, price } =
-    req.body;
+  const {
+    queryId,
+    products,
+    delievery,
+    delievery_time,
+    comment,
+    price,
+    client_username,
+  } = req.body;
 
   const getProductTitles = (products) => {
     const titles = products.map((product) => product.title);
@@ -119,7 +126,7 @@ app.post("/pay", async (req, res) => {
               [
                 {
                   text: "Завершить заказ",
-                  callback_data: `complete_order_${queryId}`,
+                  callback_data: `complete_order_${client_username}`,
                 },
               ],
             ],
@@ -155,22 +162,19 @@ app.post("/pay", async (req, res) => {
 bot.on("callback_query", async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
+
   try {
     if (data.startsWith("complete_order")) {
-      const orderId = data.split("_")[1];
+      const client_username = data.substring("complete_order_".length);
 
-      await bot.answerWebAppQuery(orderId, {
-        type: "article",
-        id: orderId,
-        title: "Ваш заказ завершен",
-        input_message_content: {
-          message_text: "Ваш заказ завершен. Спасибо за покупку!",
-        },
-      });
-
-      await bot.sendMessage(chatId, "Заказ завершен!", {
-        parse_mode: "HTML",
-      });
+      await bot.sendMessage(
+        chatId,
+        `Заказ завершен! 
+Можете сообщить об этом клиенту: @${client_username}`,
+        {
+          parse_mode: "HTML",
+        }
+      );
     }
   } catch (error) {
     console.log(error.message);
