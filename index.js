@@ -140,14 +140,6 @@ app.post("/pay", async (req, res) => {
   }
 });
 
-app.post("/getData", async (req, res) => {
-  const { initDataUnsafe } = req.body;
-
-  console.log(initDataUnsafe);
-
-  return res.status(200).json({ message: "Successfull" });
-});
-
 app.get("/", async (req, res) => {
   console.log("Works great");
   return res.status(200).json({ message: "Success" });
