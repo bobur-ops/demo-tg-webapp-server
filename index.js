@@ -112,7 +112,17 @@ app.post("/pay", async (req, res) => {
 Вид доставки: ${delievery}
 Комментарий клиента: ${comment}
       `,
-        { parse_mode: "HTML" }
+        {
+          parse_mode: "HTML",
+          reply_markup: {
+            inline_keyboard: [
+              {
+                text: "Завершить заказ",
+                callback_data: `complete_order_${queryId}`,
+              },
+            ],
+          },
+        }
       );
     });
 
@@ -137,6 +147,24 @@ app.post("/pay", async (req, res) => {
       },
     });
     return res.status(500).json({ message: "Fail" });
+  }
+});
+
+bot.on("callback_query", async (callbackQuery) => {
+  const queryId = callbackQuery.id;
+  const chatId = callbackQuery.message.chat.id;
+  const data = callbackQuery.data;
+
+  if (data.startsWith("complete_order")) {
+    const orderId = data.split("_")[1];
+
+    await bot.sendMessage(orderId, "Ваш заказ завершен. Спасибо за покупку!", {
+      parse_mode: "HTML",
+    });
+
+    await bot.sendMessage(chatId, "Заказ завершен!", {
+      parse_mode: "HTML",
+    });
   }
 });
 
