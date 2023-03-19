@@ -163,7 +163,6 @@ app.post("/pay", async (req, res) => {
 
 bot.on("callback_query", async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
-  const messageId = callbackQuery.message.message_id;
   const data = callbackQuery.data;
 
   try {
@@ -178,11 +177,6 @@ bot.on("callback_query", async (callbackQuery) => {
           parse_mode: "HTML",
         }
       );
-
-      await bot.editMessageReplyMarkup({
-        chat_id: chatId,
-        message_id: messageId,
-      });
     }
   } catch (error) {
     console.log(error.message);
