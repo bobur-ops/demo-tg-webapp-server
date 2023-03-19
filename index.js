@@ -153,11 +153,10 @@ app.post("/pay", async (req, res) => {
 });
 
 bot.on("callback_query", async (callbackQuery) => {
+  const queryId = callbackQuery.id;
+  const chatId = callbackQuery.message.chat.id;
+  const data = callbackQuery.data;
   try {
-    const queryId = callbackQuery.id;
-    const chatId = callbackQuery.message.chat.id;
-    const data = callbackQuery.data;
-
     if (data.startsWith("complete_order")) {
       const orderId = data.split("_")[1];
 
