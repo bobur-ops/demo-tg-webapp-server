@@ -156,6 +156,8 @@ bot.on("callback_query", async (callbackQuery) => {
   const queryId = callbackQuery.id;
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
+
+  console.log(queryId, chatId, data);
   try {
     if (data.startsWith("complete_order")) {
       const orderId = data.split("_")[1];
