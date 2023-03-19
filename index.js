@@ -3,6 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 import dotenv from "dotenv";
 
 dotenv.config();
+
 const token = process.env.TELGRAM_BOT_TOKEN;
 
 const prisma = new PrismaClient();
