@@ -162,13 +162,14 @@ bot.on("callback_query", async (callbackQuery) => {
     if (data.startsWith("complete_order")) {
       const orderId = data.split("_")[1];
 
-      await bot.sendMessage(
-        orderId,
-        "Ваш заказ завершен. Спасибо за покупку!",
-        {
-          parse_mode: "HTML",
-        }
-      );
+      await bot.answerWebAppQuery(orderId, {
+        type: "article",
+        id: queryId,
+        title: "Ваш заказ завершен",
+        input_message_content: {
+          message_text: "Ваш заказ завершен. Спасибо за покупку!",
+        },
+      });
 
       await bot.sendMessage(chatId, "Заказ завершен!", {
         parse_mode: "HTML",
