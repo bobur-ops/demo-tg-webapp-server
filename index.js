@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const TelegramBot = require("node-telegram-bot-api");
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 dotenv.config();
 
