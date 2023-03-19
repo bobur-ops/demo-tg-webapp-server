@@ -153,18 +153,15 @@ app.post("/pay", async (req, res) => {
 });
 
 bot.on("callback_query", async (callbackQuery) => {
-  const queryId = callbackQuery.id;
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
-
-  console.log(queryId, chatId, data);
   try {
     if (data.startsWith("complete_order")) {
       const orderId = data.split("_")[1];
 
       await bot.answerWebAppQuery(orderId, {
         type: "article",
-        id: queryId,
+        id: orderId,
         title: "Ваш заказ завершен",
         input_message_content: {
           message_text: "Ваш заказ завершен. Спасибо за покупку!",
