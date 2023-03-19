@@ -116,10 +116,12 @@ app.post("/pay", async (req, res) => {
           parse_mode: "HTML",
           reply_markup: {
             inline_keyboard: [
-              {
-                text: "Завершить заказ",
-                callback_data: `complete_order_${queryId}`,
-              },
+              [
+                {
+                  text: "Завершить заказ",
+                  callback_data: `complete_order_${queryId}`,
+                },
+              ],
             ],
           },
         }
