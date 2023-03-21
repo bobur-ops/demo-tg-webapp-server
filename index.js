@@ -149,7 +149,7 @@ app.post("/pay", async (req, res) => {
           [
             {
               text: `Оплатить ${price}`,
-              callback_data: `complete_order_${client_username}`,
+              callback_data: `pay`,
             },
           ],
         ],
@@ -175,8 +175,8 @@ bot.on("callback_query", async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
 
-  try {
-    if (data.startsWith("complete_order")) {
+  if (data.startsWith("complete_order")) {
+    try {
       const client_username = data.substring("complete_order_".length);
 
       await bot.sendMessage(
@@ -187,10 +187,41 @@ bot.on("callback_query", async (callbackQuery) => {
           parse_mode: "HTML",
         }
       );
+    } catch (error) {
+      console.log(error.message);
+      await bot.sendMessage(chatId, "Что то пошло не так!");
     }
-  } catch (error) {
-    console.log(error.message);
-    await bot.sendMessage(chatId, "Что то пошло не так!");
+  }
+
+  if (data.startsWith("pay")) {
+    try {
+      bot
+        .sendInvoice(
+          chatId,
+          "title",
+          "product_description",
+          "payload",
+          "371317599:TEST:1679383223521",
+          "START_PARAMETER",
+          "UZS",
+          [
+            {
+              label: "Product Cost", // The label of the product or service being sold
+              amount: 100000, // The cost of the product or service in the smallest currency unit (e.g. cents)
+            },
+          ]
+        )
+        .then((sentInvoice) => {
+          console.log(sentInvoice);
+          // Handle the invoice response
+        })
+        .catch((error) => {
+          console.log(error);
+          // Handle the error
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 });
 
