@@ -144,6 +144,16 @@ app.post("/pay", async (req, res) => {
       input_message_content: {
         message_text: message,
       },
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: `Оплатить ${price}`,
+              callback_data: `complete_order_${client_username}`,
+            },
+          ],
+        ],
+      },
     });
 
     return res.status(200).json({ message: "Successfull" });
